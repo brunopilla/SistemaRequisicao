@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const pool = require('../database/connection')
+const knex = require('../database/connection')
 
 
 async function checkLoggedUser(req, res, next) {
@@ -12,11 +12,11 @@ async function checkLoggedUser(req, res, next) {
     const token = authorization.split(' ')[1]
     try {
         const { id } = jwt.verify(token, process.env.JWT_PASSWORD)
-        const user = await pool.query('select * from users where id = $1', [id])
+        const user = await knex('users').where('id', id).first()
         if (!user) {
             return res.status(401).json({ message: "Para acessar este recurso um token de autenticação válido deve ser enviado." })
         }
-        const { password: _, ...loggedUser } = user.rows[0]
+        const { password: _, ...loggedUser } = user
         req.user = loggedUser
         next()
     } catch (error) {
