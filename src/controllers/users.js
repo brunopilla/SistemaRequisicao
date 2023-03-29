@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const knex = require('../database/connection')
 const jwt = require('jsonwebtoken')
 
-async function create(req, res) {
+async function createUser(req, res) {
     const { name, email, password } = req.body
 
     try {
@@ -77,7 +77,9 @@ async function readUser(req, res) {
 
 async function readUsers(req, res) {
     try {
-        const users = await knex('users').select(['id', 'name', 'email', 'aprover', 'purchaser', 'warehouse_officer', 'admin'])
+        const users = await knex('users')
+            .select(['id', 'name', 'email', 'approver', 'purchaser', 'warehouse_officer', 'admin'])
+            .where('status', 'active')
         return res.status(200).json(users)
     } catch (error) {
         return res.status(500).json({ message: "Erro interno do Servidor" })
@@ -89,7 +91,7 @@ async function update(req, res) {
 
     const id = req.user.id
     try {
-        const result = await knex('users').where(['email', email], ['id', '<>', id])
+        const result = await knex('users').where('email', email).andWhere('id', '<>', id).debug()
 
         if (result.length > 0) {
             return res.status(400).json({ message: "O e-mail informado já está sendo utilizado por outro usuário." })
@@ -115,14 +117,22 @@ async function update(req, res) {
 }
 
 async function updatePermissions(req, res) {
-    const { id, approver, purchaser, warehouse_officer, admin } = req.body
+    const { id } = req.params
+    const { approver, purchaser, warehouse_officer, admin } = req.body
     const permissions = {
         approver,
         purchaser,
         warehouse_officer,
         admin
     }
+
     try {
+        const user = await knex('users').where('id', id)
+        if (user.length == 0) {
+            return res.status(404).json({ message: "Usuário não encontrado" })
+        } else if (user[0].status == "deleted") {
+            return res.status(404).json({ message: "Usuário inativo" })
+        }
         await knex('users').update(permissions).where('id', id)
         return res.status(201).json({ message: "Permissões atualizadas" })
     } catch (error) {
@@ -131,12 +141,13 @@ async function updatePermissions(req, res) {
 }
 
 async function deleteUser(req, res) {
-    const { id } = req.body
+    const { id } = req.params
     try {
-        await knex('users').update('sataus', 'deleted').where('id', id)
+        await knex('users').update('status', 'deleted').where('id', id)
+        return res.status(201).json({ message: "Usuário excluído" })
     } catch (error) {
         return res.status(500).json({ message: "Erro interno do Servidor" })
     }
 }
 
-module.exports = { create, login, readUser, readUsers, update, updatePermissions, deleteUser }
+module.exports = { createUser, login, readUser, readUsers, update, updatePermissions, deleteUser }

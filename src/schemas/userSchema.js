@@ -17,22 +17,6 @@ const userSchema = joi.object({
         'string.max': 'Não exceder 150 caracteres para o campo senha',
         'any.required': 'O campo senha é obrigatório'
     }),
-    approver: joi.boolean().messages({
-        'boolean.base': 'O campo aprovador precisa ser "true" ou "false"',
-    }),
-    purchaser: joi.boolean().messages({
-        'boolean.base': 'O campo comprador precisa ser "true" ou "false"',
-    }),
-    warehouse_officer: joi.boolean().messages({
-        'boolean.base': 'O campo serviços externos precisa ser "true" ou "false"',
-    }),
-    admin: joi.boolean().messages({
-        'boolean.base': 'O campo administrador precisa ser "true" ou "false"',
-    }),
-    status: joi.string().max(20).messages({
-        'string.base': 'O campo status precisa ser do tipo alfabético',
-        'string.max': 'Não exceder 20 caracteres para o campo status',
-    })
 })
 
 module.exports = userSchema
