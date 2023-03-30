@@ -20,6 +20,7 @@ async function checkLoggedUser(req, res, next) {
         req.user = loggedUser
         next()
     } catch (error) {
+        console.log(error.message);
         return res.status(500).json({ message: "Erro interno do servidor." })
     }
 }

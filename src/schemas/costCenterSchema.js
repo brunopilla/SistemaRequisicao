@@ -12,7 +12,7 @@ const costCenterSchema = joi.object({
     }),
     accountable_id: joi.number().messages({
         'number.base': 'O campo responsável precisa ser do tipo numérico',
-    }),
+    })
 })
 
 module.exports = costCenterSchema

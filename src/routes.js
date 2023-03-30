@@ -6,7 +6,9 @@ const validateReqBody = require("./middlewares/validateReqBody")
 const userSchema = require("./schemas/userSchema")
 const userPermissionsSchema = require("./schemas/userPermissionsSchema")
 const costCenterSchema = require("./schemas/costCenterSchema")
-const { createCostCenter, updateCostCenter, deleteCostCenter, readCostCenters } = require("./controllers/costCenter")
+const { createCostCenter, updateCostCenter, deleteCostCenter, readCostCenters } = require("./controllers/costCenters")
+const measurementUnitSchema = require("./schemas/measurementUnitSchema")
+const { createMeasurementUnit, readMeasurementUnits, updateMeasurementUnit, deleteMeasurementUnit } = require("./controllers/measurementUnits")
 const routes = Router()
 
 routes.post('/user', validateReqBody(userSchema), createUser)
@@ -22,5 +24,10 @@ routes.post('/cost_center', validateReqBody(costCenterSchema), createCostCenter)
 routes.get('/cost_centers', readCostCenters)
 routes.put('/cost_center/:id', isAdmin, validateReqBody(costCenterSchema), updateCostCenter)
 routes.delete('/cost_center/:id', isAdmin, deleteCostCenter)
+
+routes.post('/measurement_unit', validateReqBody(measurementUnitSchema), createMeasurementUnit)
+routes.get('/measurement_units', readMeasurementUnits)
+routes.put('/measurement_unit:id', isAdmin, validateReqBody(measurementUnitSchema), updateMeasurementUnit)
+routes.delete('/measurement_unit:id', isAdmin, deleteMeasurementUnit)
 
 module.exports = routes

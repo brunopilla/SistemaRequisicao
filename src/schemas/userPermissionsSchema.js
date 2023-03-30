@@ -12,8 +12,7 @@ const userPermissionsSchema = joi.object({
     }),
     admin: joi.boolean().messages({
         'boolean.base': 'O campo administrador precisa ser "true" ou "false"',
-    }),
-
+    })
 })
 
 module.exports = userPermissionsSchema

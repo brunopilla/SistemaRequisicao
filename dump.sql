@@ -8,7 +8,7 @@ create table users (
   approver boolean,
   purchaser boolean,
   warehouse_officer boolean,
-  admin boolean
+  admin boolean,
   status varchar(20)
   );
 
@@ -16,12 +16,14 @@ create table cost_centers (
   id serial primary key,
   code varchar(10) not null,
   description varchar(100),
-  accountable_id integer references users(id)
+  accountable_id integer references users(id),
+  status varchar(20)
 );
 
 create table measurement_units (
   id char(3) primary key,
-  description varchar(50)
+  description varchar(50),
+  status varchar(20)
 );
 
 create table suppliers (
@@ -36,7 +38,7 @@ create table suppliers (
   ad_number varchar(10),
   ad_city varchar(100),
   ad_state char(2),
-  ad_country varchar(100)
+  ad_country varchar(100),
   status varchar(20)
 );
 
@@ -47,7 +49,8 @@ create table supplier_orders (
   note text,
   image text,
   issued_on timestamp,
-  bought_by_id integer references users(id)
+  bought_by_id integer references users(id),
+  status varchar(20)
 );
 
 create table requisitions (
